@@ -39,7 +39,7 @@ class LogisticRegression(nn.Module):
 
 model = LogisticRegression(n_features)
 
-learning_rate = 0.02
+learning_rate = 0.1
 criterion = nn.BCELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
