@@ -27,7 +27,7 @@ DATA_FRAME['time'] = pd.to_datetime(DATA_FRAME['time'])
 NUM_OF_AUCTIONS = len(DATA_FRAME)
 
 # Iterate rows of csv
-for index, auction in DATA_FRAME.iterrows():
+for _, auction in DATA_FRAME.iterrows():
     # List of tuplec containig player and price bided
     auction_data = [('A', auction['A']), ('B', auction['B']), ('C', auction['C'])]
     # Sort by price from largest to lowest
