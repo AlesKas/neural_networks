@@ -1,12 +1,7 @@
-from cmath import sin
-from msilib.schema import Feature
 import os
-from re import L, match
-from numpy import single
 
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.metrics import auc
 
 from auction import DATA_FRAME
 
@@ -26,17 +21,16 @@ FEATURE_2_B = []
 FEATURE_1_C = []
 FEATURE_2_C = []
 
-for index, auction in df.iterrows():
-    if auction['click'] == 1:
-        if auction['bidder_id'] == 'A':
-            FEATURE_1_A.append(auction['feature_1'])
-            FEATURE_2_A.append(auction['feature_2'])
-        elif auction['bidder_id'] == 'B':
-            FEATURE_1_B.append(auction['feature_1'])
-            FEATURE_2_B.append(auction['feature_2'])
-        elif auction['bidder_id'] == 'C':
-            FEATURE_1_C.append(auction['feature_1'])
-            FEATURE_2_C.append(auction['feature_2'])
+for _, auction in df.iterrows():
+    if auction['bidder_id'] == 'A':
+        FEATURE_1_A.append(auction['feature_1'])
+        FEATURE_2_A.append(auction['feature_2'])
+    elif auction['bidder_id'] == 'B':
+        FEATURE_1_B.append(auction['feature_1'])
+        FEATURE_2_B.append(auction['feature_2'])
+    elif auction['bidder_id'] == 'C':
+        FEATURE_1_C.append(auction['feature_1'])
+        FEATURE_2_C.append(auction['feature_2'])
 
 
 # Subtask 1
