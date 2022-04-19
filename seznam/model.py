@@ -34,41 +34,47 @@ inputs = torch.tensor(inputs.values, dtype=torch.float32).to(device=dev)
 targets = torch.tensor(targets.values, dtype=torch.float32).to(device=dev)
 
 # Create dataloader
-# train_ds = TensorDataset(inputs, targets)
-# batch_size = 10
-# train_dl = DataLoader(train_ds, batch_size)
+train_ds = TensorDataset(inputs, targets)
+batch_size = 5
+train_dl = DataLoader(train_ds, batch_size)
 
-# class LinearModel(nn.Module):
-#     def __init__(self, x, y) -> None:
-#         super().__init__()
-#         self.linear = nn.Linear(x, y)
+class LinearModel(nn.Module):
+    def __init__(self, x, y) -> None:
+        super().__init__()
+        self.linear = nn.Linear(x, y)
+        self.linear2 = nn.Linear(y, y)
+        self.linear3 = nn.Linear(y, y)
+        self.linear4 = nn.Linear(y, y)
+        self.linear5 = nn.Linear(y, y)
 
-#     # Aplly sigmoid application function to prediction
-#     def forward(self, xb):
-#         out = torch.sigmoid(self.linear(xb))
-#         return out
+    # Aplly sigmoid application function to prediction
+    def forward(self, xb):
+        out = torch.sigmoid(self.linear(xb))
+        out = self.linear2(out)
+        out = self.linear3(out)
+        out = self.linear4(out)
+        out = self.linear5(out)
+        return out
 
-# # Set up model, optimizer and loss function
-# learning_rate = 1e-4
-# model = LinearModel(inputs.shape[1], targets.shape[1]).to(device=dev)
-# optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-# loss_fun = F.mse_loss
+# Set up model, optimizer and loss function
+learning_rate = 1e-5
+model = LinearModel(inputs.shape[1], targets.shape[1]).to(device=dev)
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+loss_fun = F.mse_loss
 
-# for epoch in range(150):
-#     for xb, yb in train_dl:
-#         pred = model(inputs)
-#         loss = loss_fun(pred, targets)
-#         loss.backward()
-#         optimizer.step()
-#         optimizer.zero_grad()
-#     if (epoch + 1) % 10 == 0:
-#         print(f"Epoch {epoch+1}, Loss: {loss:.4f}")
+for epoch in range(100):
+    for xb, yb in train_dl:
+        pred = model(xb)
+        loss = loss_fun(pred, yb)
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+    if (epoch + 1) % 10 == 0:
+        print(f"Epoch {epoch+1}, Loss: {loss:.4f}")
 
 
 
-# Model predicts value with decenet accuracy relatively fast,
-# but sometimes model struggles to find local minimum and loss function "jumps"
-# between local minimum
+# Model predicts value with decenet accuracy relatively fast
 # I used standard linear regression with mean square error loss function
 # and stochastic gradient descent optimizer 
 
@@ -102,7 +108,10 @@ for auction_id in range(len(bids_test)):
     for key, val in tmp_dict.items():
         if val['click'] == 1.0:
             tmp_list.sort(key=lambda x: x[1], reverse=True)
-            print(tmp_dict)
-            # prob_first = tmp_dict[tmp_list[0][0]]
-            # prob_second = tmp_dict[tmp_list[1][0]]
-            # print(f"{prob_first}, {prob_second}")
+            prob_first = tmp_dict[tmp_list[0][0]]['pred']
+            prob_second = tmp_dict[tmp_list[1][0]]['pred']
+            bid_second = tmp_list[1][1]
+            price = (prob_second / prob_first) * bid_second
+            EARNINGS += price
+
+print(f"Total Earnings: {EARNINGS:.4f}")
